@@ -1,0 +1,72 @@
+services:
+  replica1:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev:replica1"
+    volumes:
+      - .:/app
+    environment:
+      REPLICA_ID: replica1
+      PORT: 5001
+      PEERS: http://replica2:5002,http://replica3:5003
+    ports:
+      - "5001:5001"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  replica2:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev:replica2"
+    volumes:
+      - .:/app
+    environment:
+      REPLICA_ID: replica2
+      PORT: 5002
+      PEERS: http://replica1:5001,http://replica3:5003
+    ports:
+      - "5002:5002"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5002/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  replica3:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev:replica3"
+    volumes:
+      - .:/app
+    environment:
+      REPLICA_ID: replica3
+      PORT: 5003
+      PEERS: http://replica1:5001,http://replica2:5002
+    ports:
+      - "5003:5003"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5003/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  gateway:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev:gateway"
+    volumes:
+      - .:/app
+    environment:
+      GATEWAY_PORT: 4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      replica1:
+        condition: service_healthy
+      replica2:
+        condition: service_healthy
+      replica3:
+        condition: service_healthy

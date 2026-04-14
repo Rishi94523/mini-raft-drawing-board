@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "outDir": "dist",
+    "types": ["node"]
+  },
+  "include": [
+    "shared/src/**/*.ts",
+    "replica1/src/**/*.ts",
+    "replica2/src/**/*.ts",
+    "replica3/src/**/*.ts",
+    "gateway/src/**/*.ts"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "mini-raft-drawing-board",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev:replica1": "tsx watch replica1/src/index.ts",
+    "dev:replica2": "tsx watch replica2/src/index.ts",
+    "dev:replica3": "tsx watch replica3/src/index.ts",
+    "dev:gateway": "tsx watch gateway/src/index.ts",
+    "start:replica1": "node dist/replica1/src/index.js",
+    "start:replica2": "node dist/replica2/src/index.js",
+    "start:replica3": "node dist/replica3/src/index.js",
+    "start:gateway": "node dist/gateway/src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.1",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3"
+  }
+}
