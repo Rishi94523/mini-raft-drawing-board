@@ -30,6 +30,7 @@ export interface RequestVoteResponse {
 export interface HeartbeatRequest {
   term: number;
   leaderId: string;
+  leaderCommit?: number;
 }
 
 export interface HeartbeatResponse {

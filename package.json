@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "dev:frontend": "tsc -w -p tsconfig.json",
     "dev:replica1": "tsx watch replica1/src/index.ts",
     "dev:replica2": "tsx watch replica2/src/index.ts",
     "dev:replica3": "tsx watch replica3/src/index.ts",
