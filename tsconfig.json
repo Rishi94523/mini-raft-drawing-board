@@ -17,6 +17,7 @@
     "replica1/src/**/*.ts",
     "replica2/src/**/*.ts",
     "replica3/src/**/*.ts",
-    "gateway/src/**/*.ts"
+    "gateway/src/**/*.ts",
+    "frontend/src/**/*.ts"
   ]
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Raft Drawing Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <h1>RaftBoard</h1>
+                <span class="status-badge" id="conn-status">Connecting...</span>
+            </div>
+            <div class="controls">
+                <input type="color" id="color-picker" value="#3b82f6">
+                <input type="range" id="width-picker" min="1" max="20" value="3">
+                <button id="clear-btn">Clear Local</button>
+            </div>
+        </header>
+
+        <main>
+            <canvas id="drawing-canvas"></canvas>
+        </main>
+
+        <footer>
+            <div class="node-info">
+                <span>Leader: <strong id="leader-id">Discovery...</strong></span>
+                <span>Replica Status: <strong id="cluster-status">Polling...</strong></span>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="/dist/frontend/src/app.js"></script>
+</body>
+</html>
