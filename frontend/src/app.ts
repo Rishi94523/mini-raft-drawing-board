@@ -15,11 +15,14 @@ const ctx = canvas.getContext('2d')!;
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement;
 const widthPicker = document.getElementById('width-picker') as HTMLInputElement;
 const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
+const eraserBtn = document.getElementById('eraser-btn') as HTMLButtonElement;
 const connStatus = document.getElementById('conn-status') as HTMLElement;
+const connStatePulse = document.getElementById('conn-state-pulse') as HTMLElement;
 const leaderIdEl = document.getElementById('leader-id') as HTMLElement;
 const clusterStatusEl = document.getElementById('cluster-status') as HTMLElement;
 
 let isDrawing = false;
+let isErasing = false;
 let lastX = 0;
 let lastY = 0;
 let ws: WebSocket | null = null;
@@ -37,8 +40,14 @@ window.addEventListener('resize', resize);
 resize();
 
 function stroke(s: StrokeEvent, isLocal = false) {
+    if (s.color === 'ERASER') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = s.color;
+    }
     ctx.beginPath();
-    ctx.strokeStyle = s.color;
     ctx.lineWidth = s.width;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -70,21 +79,21 @@ function connect() {
 
     ws.onopen = () => {
         connStatus.innerText = 'Connected';
-        connStatus.className = 'status-badge connected';
+        connStatePulse.className = 'pulse-dot connected';
         syncLog();
         updateClusterInfo();
     };
 
     ws.onclose = () => {
         connStatus.innerText = 'Disconnected';
-        connStatus.className = 'status-badge';
+        connStatePulse.className = 'pulse-dot disconnected';
         setTimeout(connect, 2000);
     };
 
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
         if (message.type === 'stroke-committed') {
-            stroke(message.data);
+            stroke(message.data.stroke);
         } else if (message.type === 'error') {
             console.error('Gateway error:', message.message);
         }
@@ -119,13 +128,13 @@ canvas.addEventListener('mousemove', (e) => {
     const currentY = e.offsetY;
 
     const s: StrokeEvent = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: crypto.randomUUID(),
         x0: lastX,
         y0: lastY,
         x1: currentX,
         y1: currentY,
-        color: colorPicker.value,
-        width: Number(widthPicker.value),
+        color: isErasing ? 'ERASER' : colorPicker.value,
+        width: isErasing ? parseInt(widthPicker.value) * 5 : parseInt(widthPicker.value),
         timestamp: Date.now()
     };
 
@@ -147,3 +156,16 @@ canvas.addEventListener('mouseout', () => isDrawing = false);
 clearBtn.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
+
+eraserBtn.addEventListener('click', () => {
+    isErasing = !isErasing;
+    if (isErasing) {
+        eraserBtn.classList.add('active');
+        eraserBtn.innerText = 'Erase Active';
+    } else {
+        eraserBtn.classList.remove('active');
+        eraserBtn.innerText = 'Use Eraser';
+    }
+});
+
+// Sync log

@@ -133,6 +133,10 @@ export class RaftNode {
       this.resetElectionTimer();
     }
 
+    if (payload.leaderCommit !== undefined) {
+      this.maybeAdvanceCommitIndexAsFollower(payload.leaderCommit);
+    }
+
     return {
       term: this.currentTerm,
       success: true
@@ -487,7 +491,8 @@ export class RaftNode {
 
     const heartbeat: HeartbeatRequest = {
       term: this.currentTerm,
-      leaderId: this.config.nodeId
+      leaderId: this.config.nodeId,
+      leaderCommit: this.commitIndex
     };
 
     const responses = await Promise.allSettled(
