@@ -82,4 +82,8 @@ export interface ReplicaSnapshot {
   leaderId: string | null;
   peers: string[];
   quorumSize: number;
+  /** Index of the last committed log entry (-1 if nothing committed yet). Member 2. */
+  commitIndex: number;
+  /** Total number of entries in the local log. Member 2. */
+  logLength: number;
 }
